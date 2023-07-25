@@ -1,42 +1,72 @@
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
-  annotations:
-    controller-gen.kubebuilder.io/version: v0.4.1
-  creationTimestamp: null
-  name: newkinds.my.group.com
+  name: ips.kubeovn.io
 spec:
+  group: kubeovn.io
   versions:
     - name: v1
-      schema:
-        openAPIV3Schema:
-          description: NewKind is the Schema for the NewKind API
-          properties:
-            apiVersion:
-              description: 'desc'
-              type: string
-            kind:
-              description: 'desc'
-              type: string
-            metadata:
-              type: object
-            spec:
-              description: NewKind defines the desired state of NewKind
-              properties:
-                key:
-                  description: key value which generated using a hash method
-                  type: string
-              type: object
-          type: object
       served: true
       storage: true
-      subresources:
-        status: {}
-  group: my.group.com
+      additionalPrinterColumns:
+      - name: V4IP
+        type: string
+        jsonPath: .spec.v4IpAddress
+      - name: V6IP
+        type: string
+        jsonPath: .spec.v6IpAddress
+      - name: Mac
+        type: string
+        jsonPath: .spec.macAddress
+      - name: Node
+        type: string
+        jsonPath: .spec.nodeName
+      - name: Subnet
+        type: string
+        jsonPath: .spec.subnet
+      schema:
+        openAPIV3Schema:
+          type: object
+          properties:
+            spec:
+              type: object
+              properties:
+                podName:
+                  type: string
+                namespace:
+                  type: string
+                subnet:
+                  type: string
+                attachSubnets:
+                  type: array
+                  items:
+                    type: string
+                nodeName:
+                  type: string
+                ipAddress:
+                  type: string
+                v4IpAddress:
+                  type: string
+                v6IpAddress:
+                  type: string
+                attachIps:
+                  type: array
+                  items:
+                    type: string
+                macAddress:
+                  type: string
+                attachMacs:
+                  type: array
+                  items:
+                    type: string
+                containerID:
+                  type: string
+                podType:
+                  type: string
+  scope: Cluster
   names:
-    kind: NewKind
-    listKind: NewKindList
-    plural: newkinds
-    singular: newkind
-  scope: Namespaced
-
+    plural: ips
+    singular: ip
+    kind: IP
+    shortNames:
+      - ip

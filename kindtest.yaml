@@ -6,13 +6,6 @@ metadata:
   creationTimestamp: null
   name: newkinds.my.group.com
 spec:
-  group: my.group.com
-  names:
-    kind: NewKind
-    listKind: NewKindList
-    plural: newkinds
-    singular: newkind
-  scope: Namespaced
   versions:
     - name: v1
       schema:
@@ -39,3 +32,11 @@ spec:
       storage: true
       subresources:
         status: {}
+  group: my.group.com
+  names:
+    kind: NewKind
+    listKind: NewKindList
+    plural: newkinds
+    singular: newkind
+  scope: Namespaced
+

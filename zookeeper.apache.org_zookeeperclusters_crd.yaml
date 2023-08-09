@@ -71,6 +71,25 @@ spec:
                           frequency: 
                             type: integer
                         type: object
+                      runtimeclass:
+                        type: string
+                      components:
+                        properties:
+                          limits:
+                            properties:
+                              cpu: 
+                                type: string
+                              memory:
+                                type: string
+                            type: object
+                          requests:
+                            properties:
+                              cpu: 
+                                type: string
+                              memory:
+                                type: string
+                            type: object
+                        type: object
                       env:
                         items:
                           properties:

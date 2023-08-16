@@ -119,19 +119,37 @@ spec:
               phase:
                 type: string
               conditions:
-                properties:
-                  type: 
-                    type: string
-                  status:
-                    type: string
-                  reason:
-                    type: string
-                  message:
-                    type: string
-                  lastUpdateTime:
-                    type: string
-                  lastTransitionTime:
-                    type: string
-                type: object
+                description: Condition keeps track of all cluster conditions, if they
+                  exist.
+                items:
+                  description: Condition represents one current condition of an etcd
+                    cluster. A condition might not show up if it is not happening.
+                    For example, if a cluster is not upgrading, the Upgrading condition
+                    would not show up. If a cluster is upgrading and encountered a
+                    problem that prevents the upgrade, the Upgrading condition's status
+                    will would be False and communicate the problem back.
+                  properties:
+                    lastTransitionTime:
+                      description: Last time the condition transitioned from one status
+                        to another.
+                      type: string
+                    lastUpdateTime:
+                      description: The last time this condition was updated.
+                      type: string
+                    message:
+                      description: A human readable message indicating details about
+                        the transition.
+                      type: string
+                    reason:
+                      description: The reason for the condition's last transition.
+                      type: string
+                    status:
+                      description: Status of the condition, one of True, False, Unknown.
+                      type: string
+                    type:
+                      description: Type of cluster condition.
+                      type: string
+                  type: object
+                type: array
             type: object
         type: object

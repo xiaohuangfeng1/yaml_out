@@ -110,7 +110,8 @@ spec:
                           type: object
                         type: array
                     type: object
-
+                  storageClassName:
+                    type: string
                 type: object
             type: object
           status:

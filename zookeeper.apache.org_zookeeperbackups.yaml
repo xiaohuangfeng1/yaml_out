@@ -1,0 +1,140 @@
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: zookeeperbackups.zookeeper.apache.org
+spec:
+  group: zookeeper.apache.org
+  names:
+    kind: ZookeeperBackup
+    listKind: ZookeeperBackupList
+    plural: zookeeperbackups
+    shortNames:
+    - zookeeperbackup
+    singular: zookeeperbackup
+  scope: Namespaced
+  versions:
+  - name: v1
+    schema:
+      openAPIV3Schema:
+        description: ZookeeperBackup represents a Kubernetes ZookeeperBackup Custom Resource.
+        properties:
+          apiVersion:
+            description: 'APIVersion defines the versioned schema of this representation
+              of an object. Servers should convert recognized schemas to the latest
+              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+            type: string
+          kind:
+            description: 'Kind is a string value representing the REST resource this
+              object represents. Servers may infer this from the endpoint the client
+              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: BackupSpec contains a backup specification for an zookeeper cluster.
+            properties:
+              backupPolicy:
+                description: BackupPolicy configures the backup process.
+                properties:
+                  backupIntervalInSecond:
+                    description: BackupIntervalInSecond is to specify how often operator
+                      take snapshot 0 is magic number to indicate one-shot backup
+                    format: int64
+                    type: integer
+                  maxBackups:
+                    description: MaxBackups is to specify how many backups we want
+                      to keep 0 is magic number to indicate un-limited backups
+                    type: integer
+                  timeoutInSecond:
+                    description: TimeoutInSecond is the maximal allowed time in second
+                      of the entire backup process.
+                    format: int64
+                    type: integer
+                type: object
+              clientTLSSecret:
+                description: 'ClientTLSSecret is the secret containing the zookeeper TLS
+                  client certs and must contain the following data items: data:    "zookeeper-client.crt":
+                  <pem-encoded-cert>    "zookeeper-client.key": <pem-encoded-key>    "zookeeper-client-ca.crt":
+                  <pem-encoded-ca-cert>'
+                type: string
+              zookeeperCluster:
+                type: string
+              zookeeperEndpoints:
+                description: ZookeeperEndpoints specifies the endpoints of an zookeeper cluster.
+                  When multiple endpoints are given, the backup operator retrieves
+                  the backup from the endpoint that has the most up-to-date state.
+                  The given endpoints must belong to the same zookeeper cluster.
+                items:
+                  type: string
+                type: array
+              obs:
+                description: DSware defines the DSware backup source spec.
+                properties:
+                  bucket:
+                    description: backup的目标桶名
+                    type: string
+                  endpoint:
+                    description: (deprecated; kept for compatibility)
+                    type: string
+                  obsSecret:
+                    description: "The name of the secret object that stores the credential
+                      which will be used to access Huawei Cloud OBS. \n The secret
+                      must contain the following keys/fields:     accessKeyID     accessKeySecret
+                      \n The format of secret: \n   apiVersion: v1   kind: Secret
+                      \  metadata:     name: <my-credential-name>   type: Opaque   data:
+                      \    accessKeyID: <base64 of my-access-key-id>     accessKeySecret:
+                      <base64 of my-access-key-secret> (deprecated; kept for compatibility)"
+                    type: string
+                  path:
+                    description: 'Path is the full abs path where the backup is saved.
+                      The format of the path must be: "<obs-bucket-name>/<path-to-backup-file>"
+                      e.g: "mybucket/zookeeper.backup" (deprecated; kept for compatibility)'
+                    type: string
+                type: object
+              storageType:
+                description: StorageType is the zookeeper backup storage type. We need
+                  this field because CRD doesn't support validation against invalid
+                  fields and we cannot verify invalid backup storage source.
+                type: string
+            type: object
+          status:
+            description: BackupStatus represents the status of the ZookeeperBackup Custom
+              Resource.
+            properties:
+              zookeeperRevision:
+                description: ZookeeperRevision is the revision of zookeeper's KV store where
+                  the backup is performed on.
+                format: int64
+                type: integer
+              zookeeperVersion:
+                description: ZookeeperVersion is the version of the backup zookeeper server.
+                type: string
+              lastSuccessDate:
+                description: LastSuccessDate indicate the time to get snapshot last
+                  time
+                type: string
+              obsPath:
+                description: OBSPath 在OBS上保存的路径
+                type: string
+              reason:
+                description: Reason indicates the reason for any backup related failures.
+                type: string
+              succeeded:
+                description: Succeeded indicates if the backup has Succeeded.
+                type: boolean
+            required:
+            - succeeded
+            type: object
+        required:
+        - metadata
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}
+status:
+  acceptedNames:
+    kind: ""
+    plural: ""
+  conditions: []
+  storedVersions: []

@@ -239,6 +239,10 @@ spec:
                               type: object
                             dataType:
                               type: string
+                            labels:
+                              additionalProperties:
+                                type: string
+                              type: object
                           type: object
                         type: array
                     type: object
